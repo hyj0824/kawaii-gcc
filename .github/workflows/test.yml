@@ -24,3 +24,4 @@ jobs:
       with:
         files: prebuilt/*
         fail_on_unmatched_files: true
+        tag_name: ${{ steps.bump.outputs.new_tag }}
