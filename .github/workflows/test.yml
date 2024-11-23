@@ -14,3 +14,17 @@ jobs:
     - uses: phish108/autotag-action@v1.1.55
       with:
         github-token: ${{ secrets.GITHUB_TOKEN}}
+
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: install tools
+      run: sudo apt-get install gettext
+    - name: po2mo
+      run: msgfmt src/zh-kawaii.po -o prebuilt/zh-kawaii.mo
+    - uses: softprops/action-gh-release@v1
+      with:
+        files:  prebuilt/*
+        fail_on_unmatched_files: true
+      
