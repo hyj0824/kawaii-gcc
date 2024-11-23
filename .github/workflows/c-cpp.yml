@@ -3,7 +3,7 @@ name: C/C++
 on:
   push:
     tags:
-      - "v*"
+      - "*"
 
 jobs:
   build:
