@@ -1,31 +1,26 @@
-name: Auto.Tag
+name: autorelease
 
 on: 
 - push
 
 jobs:
-  tag:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: 
-        - 12
-    steps: 
-    - uses: phish108/autotag-action@v1.1.55
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN}}
-
-  build-release:
-    runs-on: ubuntu-latest
-    needs: tag
     steps:
     - uses: actions/checkout@v4
-    - name: install tools
+    - name: Install tools
       run: sudo apt-get install gettext
-    - name: po2mo
+    - name: Compile .mo
       run: msgfmt src/zh-kawaii.po -o prebuilt/zh-kawaii.mo
-    - uses: softprops/action-gh-release@v1
+    
+    - name: Bump version and push tag
+      id: bump
+      uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        files:  prebuilt/*
+        files: prebuilt/*
         fail_on_unmatched_files: true
-      
